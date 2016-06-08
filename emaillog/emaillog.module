@@ -131,11 +131,12 @@ function template_preprocess_emaillog(&$variables) {
   $variables['log']['name']          = $variables['log']['variables']['name'];
   $variables['log']['link']          = strip_tags($variables['log']['variables']['link']);
   $variables['log']['message']       = strip_tags(t($variables['log']['message'], $variables['log']['variables']));
+  $variables['log']['channel']       = $variables['log']['variables']['channel'];
 
   $severity = _emaillog_system_string($severity_list[$variables['log']['severity']]->render());
   $variables['theme_hook_suggestions'][] = 'emaillog__' . $severity;
-  $variables['theme_hook_suggestions'][] = 'emaillog__' . _emaillog_system_string($variables['log']['type']);
-  $variables['theme_hook_suggestions'][] = 'emaillog__' . $severity . '__' . _emaillog_system_string($variables['log']['type']);
+  $variables['theme_hook_suggestions'][] = 'emaillog__' . _emaillog_system_string($variables['log']['channel']);
+  $variables['theme_hook_suggestions'][] = 'emaillog__' . $severity . '__' . _emaillog_system_string($variables['log']['channel']);
 }
 
 /**

@@ -127,8 +127,8 @@ function template_preprocess_emaillog(&$variables) {
   $severity_list                     = RfcLogLevel::getLevels();
   $variables['log']['severity_desc'] = Unicode::ucfirst($severity_list[$variables['log']['severity']]->render());
   $variables['log']['datetime']      = date('Y-m-d H:i:s', $variables['log']['variables']['timestamp']);
-  $variables['log']['uid']           = $variables['log']['variables']['user']->id();
-  $variables['log']['name']          = user_format_name($variables['log']['variables']['user']);
+  $variables['log']['uid']           = $variables['log']['variables']['uid'];
+  $variables['log']['name']          = $variables['log']['variables']['name'];
   $variables['log']['link']          = strip_tags($variables['log']['variables']['link']);
   $variables['log']['message']       = strip_tags(t($variables['log']['message'], $variables['log']['variables']));
 

@@ -179,7 +179,7 @@ class emaillogConfigForm extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $userInputValues = $form_state->getUserInput();
-    $config = $this->configFactory->get('emaillog.settings');
+    $config = $this->configFactory->getEditable('emaillog.settings');
 
     $severity_levels = RfcLogLevel::getLevels();
 

@@ -40,7 +40,7 @@ class EmailLogger implements LoggerInterface {
    *   The parser to use when extracting message variables.
    */
   public function __construct(ConfigFactory $config_factory, LogMessageParserInterface $parser) {
-    $this->config = $config_factory->get('emaillog.settings');
+    $this->config = $config_factory->getEditable('emaillog.settings');
     $this->parser = $parser;
   }
 
@@ -121,6 +121,10 @@ class EmailLogger implements LoggerInterface {
     if (empty($site_mail)) {
       $site_mail = ini_get('sendmail_from');
     }
+
+    $context['uid'] = $context['user']->id();
+    $context['name'] = $context['user']->getDisplayName();
+    unset($context['user']);
 
     $params = array(
       'message' => $message,

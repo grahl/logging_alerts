@@ -7,7 +7,7 @@
 
 namespace Drupal\emaillog\Form;
 
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -66,7 +66,7 @@ class emaillogConfigForm extends FormBase {
     }
     foreach ($severity_levels as $level_id => $description) {
       $form['debug_info'][$level_id] = array(
-        '#title' => String::checkPlain($description),
+        '#title' => $description->render(),
         '#type' => 'checkboxes',
         '#options' => $options,
         '#default_value' => isset($status[$level_id]) ? $status[$level_id] : array(),
@@ -103,7 +103,7 @@ class emaillogConfigForm extends FormBase {
       '#title'          => t('Maximum allowed similarity level between consecutive email alerts'),
       '#description'    => '<p>' . t('Highest similarity level above which new email alerts will not be sent anymore if "Maximum number of allowed consecutive similar email alerts" has been reached and email alerts are considered "consecutive" (time period between each previous and next one is smaller than defined above). Possible values range from 0 to 1, where 1 stands for two identical emails.') . '</p>'
         . '<p>' . t('For example setting "Maximum number of allowed consecutive similar email alerts" to 5, "Email alerts should be considered consecutive if sent within" to 5 minutes and "Similarity level" to 0.9 would mean that only 5 email alerts would be sent within 5 minutes if Watchdog entries are similar in at least 90%.') . '</p>'
-        . '<p>' . t("(Note that similarity level is calculated using PHP's <a href='@similar_text_url'>similar_text()</a> function, with all its complexity and implications.)", array('@similar_text_url' => Url::fromUri('http://php.net/similar_text'))) . '</p>',
+        . '<p>' . t("(Note that similarity level is calculated using PHP's <a href='@similar_text_url'>similar_text()</a> function, with all its complexity and implications.)", array('@similar_text_url' => Url::fromUri('http://php.net/similar_text')->toString())) . '</p>',
       '#default_value'  => $this->config('emaillog.settings')->get('emaillog_max_similarity_level'),
     );
 

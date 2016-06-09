@@ -130,8 +130,13 @@ function template_preprocess_emaillog(&$variables) {
   $variables['log']['uid']           = $variables['log']['variables']['uid'];
   $variables['log']['name']          = $variables['log']['variables']['name'];
   $variables['log']['link']          = strip_tags($variables['log']['variables']['link']);
-  $variables['log']['message']       = strip_tags(t($variables['log']['message'], $variables['log']['variables']));
   $variables['log']['channel']       = $variables['log']['variables']['channel'];
+
+  // FIXME: This is a workaround to avoid array-to-string conversion errors
+  $backtrace = $variables['log']['variables']['backtrace'];
+  unset($variables['log']['variables']['backtrace']);
+  $variables['log']['message'] = strip_tags(t($variables['log']['message'], $variables['log']['variables']));
+  $variables['log']['variables']['backtrace'] = $backtrace;
 
   $severity = _emaillog_system_string($severity_list[$variables['log']['severity']]->render());
   $variables['theme_hook_suggestions'][] = 'emaillog__' . $severity;

@@ -117,7 +117,7 @@ function emaillog_mail($key, &$message, $params) {
       '#log' => $params
     );
 
-    $message['body'][] = render($emaillog_theme_element);
+    $message['body'][] = \Drupal::service('renderer')->renderRoot($emaillog_theme_element);
   }
 }
 

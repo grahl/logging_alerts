@@ -10,5 +10,5 @@
  * Deletes all emaillog variables and clears variable cache.
  */
 function emaillog_uninstall() {
-  $config_social_stats = \Drupal::config('emaillog')->delete();
+  \Drupal::configFactory()->getEditable('emaillog')->delete();
 }

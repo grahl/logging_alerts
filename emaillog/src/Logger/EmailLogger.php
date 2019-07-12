@@ -3,8 +3,10 @@
 namespace Drupal\emaillog\Logger;
 
 use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LogMessageParserInterface;
 use Drupal\Core\Logger\RfcLoggerTrait;
+use Drupal\user\UserInterface;
 use Psr\Log\LoggerInterface;
 
 class EmailLogger implements LoggerInterface {
@@ -25,6 +27,13 @@ class EmailLogger implements LoggerInterface {
   protected $parser;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Stores whether there is a system logger connection opened or not.
    *
    * @var bool
@@ -38,10 +47,13 @@ class EmailLogger implements LoggerInterface {
    *   The configuration factory object.
    * @param \Drupal\Core\Logger\LogMessageParserInterface $parser
    *   The parser to use when extracting message variables.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    */
-  public function __construct(ConfigFactory $config_factory, LogMessageParserInterface $parser) {
+  public function __construct(ConfigFactory $config_factory, LogMessageParserInterface $parser, EntityTypeManagerInterface $entity_type_manager) {
     $this->config = $config_factory->getEditable('emaillog.settings');
     $this->parser = $parser;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -122,9 +134,13 @@ class EmailLogger implements LoggerInterface {
       $site_mail = ini_get('sendmail_from');
     }
 
-    $context['uid'] = $context['user']->id();
-    $context['name'] = $context['user']->getDisplayName();
-    unset($context['user']);
+    if (isset($context['uid'])) {
+      /** @var \Drupal\user\UserInterface $user */
+      $user = $this->entityTypeManager->getStorage('user')->load($context['uid']);
+      if ($user instanceof UserInterface) {
+        $context['name'] = $user->getDisplayName();
+      }
+    }
 
     $params = array(
       'message' => $message,
